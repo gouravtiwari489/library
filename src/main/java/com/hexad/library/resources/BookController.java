@@ -1,22 +1,28 @@
 package com.hexad.library.resources;
 
 import com.hexad.library.model.Book;
+import com.hexad.library.service.BookService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.logging.Logger;
+import java.util.List;
 
 @RestController
 @RequestMapping("/books")
 @Slf4j
 public class BookController {
 
+    @Autowired
+    private BookService bookService;
+
     @PostMapping
-    public ResponseEntity<Book> save(@RequestBody Book book){
+    public ResponseEntity<List<Book>> save(@RequestBody Book book){
         log.info("Input request to add books {}", book);
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        List<Book> books = bookService.save(book);
+        return ResponseEntity.status(HttpStatus.CREATED).body(books);
     }
 
     @GetMapping("/{id}")
@@ -26,9 +32,10 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<Book> getAll(){
+    public ResponseEntity<List<Book>> getAll(){
         log.info("Getting all books");
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        List<Book> books = bookService.getAll();
+        return ResponseEntity.status(HttpStatus.OK).body(books);
     }
 
     @DeleteMapping("/{id}")
