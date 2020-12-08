@@ -9,7 +9,7 @@ import java.util.List;
 public class Issue {
 
     private Integer userId;
-    private List<Borrowed> issuedBookIds;
+    private List<Borrowed> issueBooks;
 
 
 }

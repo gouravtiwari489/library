@@ -28,7 +28,8 @@ public class BookController {
     @GetMapping("/{id}")
     public ResponseEntity<Book> getById(@PathVariable Integer id){
         log.info("Get book by id {}", id);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        Book book = bookService.getById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(book);
     }
 
     @GetMapping

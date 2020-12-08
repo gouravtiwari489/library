@@ -24,41 +24,48 @@ public class IssueValidator {
 
     public void checkAvailability(List<Borrowed> issuedBookIds) {
         Map<Integer, Book> availableBooks =  bookRepository.getAll();
+
+        if(availableBooks.isEmpty()){
+            throw new LibraryException("99","Library has no books", "VALIDATION_ERROR");
+        }
+
         for(Map.Entry<Integer, Book> entry:availableBooks.entrySet()){
             for(Borrowed borrowed:issuedBookIds){
                 if(!availableBooks.containsKey(borrowed.getBookId())){
-                    throw new LibraryException("100", "Book with id"+borrowed.getBookId()+"is no available in library","E001");
+                    throw new LibraryException("100", "Book with id: "+borrowed.getBookId()+" is no available in library","VALIDATION_ERROR");
                 }
                 if(entry.getKey().equals(borrowed.getBookId()) && entry.getValue().getQuantity()<=0){
-                    throw new LibraryException("101", "Book with id"+borrowed.getBookId()+"is out of stock","E002");
+                    throw new LibraryException("101", "Book with id "+borrowed.getBookId()+" is out of stock","VALIDATION_ERROR");
                 }
             }
 
         }
     }
 
-    public void validateBooksPerUser(Issue issue) {
+    public void assignBook(Issue issue) {
         Map<Integer, List<Borrowed>> issuedBooks = issueRepository.getAllIssuedBooks();
-        List<Borrowed> orderedBooks = issue.getIssuedBookIds();
+        List<Borrowed> orderedBooks = issue.getIssueBooks();
         Map<Integer, Book> availableBooks  = bookRepository.getAll();
 
-        for(Map.Entry<Integer, List<Borrowed>> entry:issuedBooks.entrySet()){
-            for (Borrowed order: orderedBooks) {
-                if(!issuedBooks.containsKey(issue.getUserId())){
-                    List<Borrowed> borroweds = new ArrayList<>();
-                    borroweds.add(order);
-                    Integer count = availableBooks.get(order.getBookId()).getQuantity();
-                    availableBooks.get(order.getBookId()).setQuantity(count-1);
-                    issuedBooks.put(issue.getUserId(), borroweds);
-                }else{
-                    List<Borrowed> borroweds=  issuedBooks.get(issue.getUserId());
-                    borroweds.add(order);
-                    Integer count = availableBooks.get(order.getBookId()).getQuantity();
-                    availableBooks.get(order.getBookId()).setQuantity(count-1);
-                    issuedBooks.put(issue.getUserId(), borroweds);
+        for(Map.Entry<Integer, Book> entry:availableBooks.entrySet()){
+            for(Borrowed orderedBook: orderedBooks){
+                if(entry.getValue().getId().equals(orderedBook.getBookId())){
+
+                    if(!issuedBooks.containsKey(issue.getUserId())){
+                        List<Borrowed> list = new ArrayList<>();
+                        list.add(orderedBook);
+                        issuedBooks.put(issue.getUserId(), list);
+                        Integer count = entry.getValue().getQuantity();
+                        entry.getValue().setQuantity(count-1);
+                    }else{
+                        List<Borrowed> existingIssuedBooks = issuedBooks.get(issue.getUserId());
+                        existingIssuedBooks.add(orderedBook);
+                        issuedBooks.put(issue.getUserId(), existingIssuedBooks);
+                        Integer count = entry.getValue().getQuantity();
+                        entry.getValue().setQuantity(count-1);
+                    }
                 }
             }
-
         }
 
     }

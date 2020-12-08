@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(libraryException.getMessage(),
                 libraryException.getId(), libraryException.getErrorCode());
 
-        if ("VALIDATION_ERROR".equalsIgnoreCase(errorResponse.getErrorMsg())) {
+        if ("VALIDATION_ERROR".equalsIgnoreCase(errorResponse.getErrorCode())) {
              responseEntity = new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

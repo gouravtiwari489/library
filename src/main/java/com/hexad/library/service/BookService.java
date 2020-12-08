@@ -22,4 +22,9 @@ public class BookService {
     public List<Book> getAll() {
         return bookRepository.getAll().entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList());
     }
+
+    public Book getById(Integer id) {
+       Book book = bookRepository.getAll().get(id);
+       return book;
+    }
 }
