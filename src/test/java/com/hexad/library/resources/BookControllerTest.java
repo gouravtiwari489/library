@@ -1,14 +1,20 @@
 package com.hexad.library.resources;
 
+import com.hexad.library.model.Book;
+import com.hexad.library.service.BookService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Arrays;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -20,13 +26,16 @@ public class BookControllerTest {
 
     private MockMvc mockMvc;
 
+    @Mock
+    private BookService bookService;
+
     @InjectMocks
     private BookController bookController;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(BookController.class).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(bookController).build();
     }
 
     @Test
@@ -52,11 +61,11 @@ public class BookControllerTest {
     @Test
     public void shouldGetAllBooks() throws Exception
     {
+        Mockito.when(bookService.getAll()).thenReturn(Arrays.asList(new Book()));
         mockMvc.perform(get("/books")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        //.andExpect(MockMvcResultMatchers.jsonPath("$.id")
-        // .value(1));
+
     }
 
     @Test
