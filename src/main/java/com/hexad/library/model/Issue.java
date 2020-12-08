@@ -9,9 +9,7 @@ import java.util.List;
 public class Issue {
 
     private Integer userId;
-    private List<Book> issuedBookIds;
-    private Date issueDate;
-    private Date dueDate;
-    private Date returnDate;
+    private List<Borrowed> issuedBookIds;
+
 
 }

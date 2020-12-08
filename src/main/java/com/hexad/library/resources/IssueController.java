@@ -17,8 +17,7 @@ public class IssueController {
     private IssueService issueService;
 
     @PostMapping
-    public ResponseEntity<?> issueBook(@RequestBody Issue issue){
-        issueService.issue(issue);
-        return null;
+    public ResponseEntity<Issue> issueBook(@RequestBody Issue issue){
+        return ResponseEntity.ok(issueService.issue(issue));
     }
 }
