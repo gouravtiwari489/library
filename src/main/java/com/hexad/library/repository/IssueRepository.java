@@ -22,4 +22,8 @@ public class IssueRepository {
     public Map<Integer, List<Borrowed>> getAllIssuedBooks(){
         return issuedBooks;
     }
+
+    public Map<Integer, List<Borrowed>> getAll() {
+        return issuedBooks;
+    }
 }

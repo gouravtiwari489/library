@@ -63,4 +63,8 @@ public class IssueService {
         Integer count = entry.getValue().getQuantity();
         entry.getValue().setQuantity(count - 1);
     }
+
+    public Map<Integer, List<Borrowed>> getAll() {
+        return issueRepository.getAll();
+    }
 }
