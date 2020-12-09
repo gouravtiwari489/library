@@ -3,13 +3,11 @@ package com.hexad.library.util;
 import com.hexad.library.exception.LibraryException;
 import com.hexad.library.model.Book;
 import com.hexad.library.model.Borrowed;
-import com.hexad.library.model.Issue;
 import com.hexad.library.repository.BookRepository;
 import com.hexad.library.repository.IssueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,31 +40,13 @@ public class IssueValidator {
         }
     }
 
-    public void assignBook(Issue issue) {
-        Map<Integer, List<Borrowed>> issuedBooks = issueRepository.getAllIssuedBooks();
-        List<Borrowed> orderedBooks = issue.getIssueBooks();
-        Map<Integer, Book> availableBooks  = bookRepository.getAll();
-
-        for(Map.Entry<Integer, Book> entry:availableBooks.entrySet()){
-            for(Borrowed orderedBook: orderedBooks){
-                if(entry.getValue().getId().equals(orderedBook.getBookId())){
-
-                    if(!issuedBooks.containsKey(issue.getUserId())){
-                        List<Borrowed> list = new ArrayList<>();
-                        list.add(orderedBook);
-                        issuedBooks.put(issue.getUserId(), list);
-                        Integer count = entry.getValue().getQuantity();
-                        entry.getValue().setQuantity(count-1);
-                    }else{
-                        List<Borrowed> existingIssuedBooks = issuedBooks.get(issue.getUserId());
-                        existingIssuedBooks.add(orderedBook);
-                        issuedBooks.put(issue.getUserId(), existingIssuedBooks);
-                        Integer count = entry.getValue().getQuantity();
-                        entry.getValue().setQuantity(count-1);
-                    }
-                }
+    public void isBookAlreadyAssignedToUser(List<Borrowed> existingIssuedBooks, Borrowed orderedBook, Integer userId) {
+        for(Borrowed borrowed: existingIssuedBooks){
+            if (borrowed.getBookId().equals(orderedBook.getBookId())){
+                throw new LibraryException("103", "Book with id "+borrowed.getBookId()+" is already assigned to "+userId, "VALIDATION_ERROR");
             }
         }
-
     }
+
+
 }
